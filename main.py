@@ -55,7 +55,19 @@ def main():
     hangman = ''
     for i in range(len(word)):
         hangman += '-'
+    print(word)
+    print(hangman)
 
+    stillGuessing = True
+    while stillGuessing:
+        tempChar = input('Enter your guess ')
+        letterPos = word.find(tempChar)
+        for i in range(len(word)):
+            if tempChar == word[i]:
+                hangman = hangman[:i] + word[i] + hangman[i+1:]
+        print(hangman)
+        if hangman == word:
+            print('you won')
     print(word)
     print(hangman)
 
