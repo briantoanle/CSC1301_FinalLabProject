@@ -10,6 +10,52 @@ def hangmanConversion(word, letterList):
                 print("_", end=" ")
 
 
+'''
+Game Plan:
+ -
+'''
+import random
+
+masterList = []
+
+# read text file and store words into list
+def storeWordsIntoList():
+
+    # list of 58109 words
+    with open('wordlist.txt','r') as f:
+        for line in f:
+
+            temp = line.strip()
+            masterList.append(temp)
+
+# get a random word from master list
+def getWord():
+    secretWord = random.randint(0,len(masterList)-1)
+    return masterList[secretWord]
+
+
+def guessing():
+    hangman = ''
+    word = 'alibaba'
+    for i in range(len(word)):
+        hangman+='-'
+    for i in range(len(word)):
+        if 'a' == word[i]:
+            hangman = hangman.replace('-','a')
+
+    stillGuessing = True
+    while stillGuessing:
+        tempChar = str(input("Please enter the character you want to guess:"))
+
+def inputValidation(inputStr):
+    if len(inputStr) > 1:
+        print('Please enter one character only. ')
+        return 0
+    elif inputStr.isdigit():
+        print('Please enter a character. ')
+        return 0
+    else:
+        return inputStr
 def hangmanGraphic(lifeNum):
     if lifeNum == 0:
         print(" ")
@@ -29,14 +75,6 @@ def hangmanGraphic(lifeNum):
         print("|      ")
         print("|      ")
 
-    elif lifeNum == 1:
-        print(" ")
-        print("______")
-        print("|     |")
-        print("|     0")
-        print("|      ")
-        print("|      ")
-        print("|      ")
 
     elif lifeNum == 2:
         print(" ")
@@ -62,7 +100,7 @@ def hangmanGraphic(lifeNum):
         print("|     |")
         print("|     0")
         print("|     |")
-        print("|    / /\/")
+        print("|    / \\")
         print("|      ")
 
     elif lifeNum == 5:
@@ -71,7 +109,7 @@ def hangmanGraphic(lifeNum):
         print("|     |")
         print("|     0")
         print("|    /|")
-        print("|    / /\/")
+        print("|    / \\")
         print("|      ")
 
     else:
@@ -79,9 +117,68 @@ def hangmanGraphic(lifeNum):
         print("______")
         print("|     |")
         print("|     0")
-        print("|    /|/\/")
-        print("|    / /\/")
+        print("|    /|\\")
+        print("|    / \\")
         print("|      ")
+
+from IPython.display import clear_output
+
+def main():
+    # get .txt file and store it into master list
+    storeWordsIntoList()
+
+    # store the secret word inside a variable
+    word = getWord()
+
+    hangman = ''
+    for i in range(len(word)):
+        hangman += '-'
+
+    correct = 0
+    wrong = 0
+    life = 0
+    stillGuessing = True
+    while stillGuessing:
+        
+        # Used for debugging to easily know what the word is
+        # print(word)
+        hangmanGraphic(life)
+        print(hangman)
+        userInput = input('Enter your guess ')
+        in1 = inputValidation(userInput)
+        if in1 == userInput:
+            if in1 not in word:
+                life += 1
+            for i in range(len(word)):
+                if userInput == word[i]:
+                    hangman = hangman[:i] + word[i] + hangman[i+1:]
+                    correct +=1
+                else:
+                    wrong+=1
+        print(hangman)
+
+        if hangman == word:
+             print('You won!')
+             stillGuessing = False
+        if life == 6:
+            hangmanGraphic(life)
+            print("You lost!")
+            stillGuessing = False
+
+
+from os import system, name
+
+# import sleep to show output for some time period
+from time import sleep
+
+
+# define our clear function
+def clear():
+    # for windows
+    if name == 'nt':
+        _ = system('cls')
+
+main()
 
 
 def hangmanGuess(word):
