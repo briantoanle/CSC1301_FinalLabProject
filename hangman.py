@@ -129,13 +129,18 @@ def getAPI(word):
     else:
         return 'null'
 
+
+
+# [[1,2,3],[3,4,5]]
 # return word depending on difficulty picked
 def getWord(difficulty):
     temp = 0
     secretWord = 0
     # easy would return words with length from 4 to 6
     if difficulty == 'easy' or difficulty == '1':
+        # randomized length of word
         temp = random.randint(2,4)
+        # randomized word in that length
         secretWord = random.randint(0,len(masterListByLength[temp])-1)
 
     # medium would return words with length from 7 to 9
@@ -253,7 +258,8 @@ def setupGame():
                     hangman = hangman[:i] + word[i] + hangman[i + 1:]
 
         gameStatus = lifeGraphics(life, hangman,word)
-
+        if gameStatus == False:
+            break
         # check to see if user got everything right
         if hangman == word:
             print('You got it!')
@@ -262,9 +268,12 @@ def setupGame():
             stillPlaying = False
             return False
 
-setupGame()
 def playGame():
-    play = True
-    finished = True
-    while play:
-        finished = setupGame()
+    while True:
+        playGame = str(input("Do you want to play the Hangman game? Yes(1) No(2)\n"))
+        if playGame == "y" or "Y" or "1":
+            setupGame()
+        else:
+            break
+        continue
+playGame()
