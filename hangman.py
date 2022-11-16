@@ -1,6 +1,4 @@
 
-
-
 '''
 functions:
     get txt into list
@@ -11,8 +9,13 @@ functions:
 
 '''
 
+# rules:
+# if user does not enter a valid difficulty choice, program will quit
+# valid difficulty inputs are: easy/medium/hard/extreme or 1/2/3/4
+
 import random
 import requests
+import pip._vendor.requests
 import json
 
 masterList = []
@@ -150,7 +153,7 @@ def getWord(difficulty):
         temp = random.randint(11, 13)
         secretWord = random.randint(0, len(masterListByLength[temp]) - 1)
     else:
-        masterListByLength[0][0] = 'Nothing was found'
+        return 0
     # return the word by difficulty
     return masterListByLength[temp][secretWord]
 
@@ -176,16 +179,16 @@ def gameRules():
     return difficulty
 
 def checkUserInput(inputStr):
-    specialCharacter = "[@_!#$%^&*()<>?/|}{~:]',."
+    specialCharacter = "~`!@#$%^&*()_+-=[]\{}|;':\"\,./<>?"
     if len(inputStr) > 1:
         print('Please enter one character only. ')
-        return 0
+        return ''
     elif inputStr.isdigit():
         print('Please enter a letter only. ')
-        return 0
+        return ''
     elif inputStr in specialCharacter:
         print('Please enter a letter only. ')
-        return 0
+        return ''
     else:
         return inputStr
 
@@ -202,8 +205,9 @@ def lifeGraphics(life, hangman,word):
     elif life == 6:
         hangmanGraphic(life)
         print('You gotten 6 wrong and lost!')
+        #
         print(f'The word is {word}.')
-        stillPlaying = False
+        return False
 
 def setupGame():
     # set life to 0
@@ -214,6 +218,8 @@ def setupGame():
 
     # get secret word
     word = getWord(gameRules())
+    if word == 0:
+        quit('Invalid input')
 
     hangman = ''
     for i in range(len(word)):
@@ -228,8 +234,11 @@ def setupGame():
 
         userGuess = input('\nEnter a character ')
         validatedUserGuess = checkUserInput(userGuess)
-        if validatedUserGuess not in entered:
-            entered += validatedUserGuess.upper() + ' '
+        if str(validatedUserGuess) not in entered:
+            entered += str(validatedUserGuess) + ' '
+        else:
+            print('You have already entered this character')
+
         print('You have entered',entered)
         # keep a counter of how many times user has guessed
         counter += 1
@@ -243,7 +252,7 @@ def setupGame():
                 if validatedUserGuess == word[i]:
                     hangman = hangman[:i] + word[i] + hangman[i + 1:]
 
-        lifeGraphics(life, hangman,word)
+        gameStatus = lifeGraphics(life, hangman,word)
 
         # check to see if user got everything right
         if hangman == word:
@@ -251,12 +260,11 @@ def setupGame():
             print('The word is', word.upper())
             print(f'It only took you {counter} tries.')
             stillPlaying = False
-
+            return False
 
 setupGame()
-
-
-#print(getWord('easy'))
-#print(getWord('medium'))
-#print(getWord('asdf'))
-
+def playGame():
+    play = True
+    finished = True
+    while play:
+        finished = setupGame()
